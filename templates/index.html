@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>СухоVL — народная карта происшествий Владивостока</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cover.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flow.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/votes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/photo_sheet.css') }}">
+    {% if is_dev %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dev.css') }}">
+    {% endif %}
+</head>
+<body data-dev="{{ '1' if is_dev else '0' }}" data-stage="cover">
+    <header class="header">
+        <span class="header__brand">СухоVL</span>
+        <span class="header__badge">народная карта происшествий</span>
+        <span class="header__spacer"></span>
+        {% if is_dev %}
+            <a class="header__link" href="/dev">Кабинет</a>
+            <a class="header__link" href="/logout">Выйти</a>
+        {% else %}
+            <a class="header__link" href="/login">
+                <span class="header__link-full">Кабинет разработчика</span>
+                <span class="header__link-short" aria-hidden="true">Кабинет</span>
+            </a>
+        {% endif %}
+    </header>
+
+    <div id="map" data-lat="{{ center.lat }}" data-lon="{{ center.lon }}"
+         data-provider="{{ provider }}"></div>
+    <div id="center-pin" class="center-pin hidden" aria-hidden="true">
+        <span class="center-pin__pulse"></span>
+        <span class="center-pin__head"></span>
+        <span class="center-pin__shadow"></span>
+    </div>
+
+    {% if is_dev %}
+    <div id="dev-bar" class="dev-bar">
+        <label><input type="checkbox" id="dev-moderation" checked> Режим модерации</label>
+        <span id="dev-counts" class="dev-bar__counts"></span>
+    </div>
+    {% endif %}
+
+    <!-- Шаг 0: стартовая обложка -->
+    <section id="start-screen" class="cover" aria-label="Выбор действия">
+        <div class="cover__bg" aria-hidden="true">
+            <span class="cover__blob cover__blob--a"></span>
+            <span class="cover__blob cover__blob--b"></span>
+            <span class="cover__blob cover__blob--c"></span>
+            <span class="cover__grid"></span>
+        </div>
+
+        <div class="cover__card">
+            <div class="cover__logo" aria-hidden="true">
+                <svg viewBox="0 0 48 48" width="56" height="56">
+                    <defs>
+                        <linearGradient id="dropGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#7dd3fc"/>
+                            <stop offset="100%" stop-color="#0369a1"/>
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#dropGrad)"
+                          d="M24 4 C14 18 10 26 10 32 a14 14 0 0 0 28 0 C38 26 34 18 24 4 Z"/>
+                    <path fill="rgba(255,255,255,0.45)"
+                          d="M18 24 c-2 3 -3 6 -3 9 a9 9 0 0 0 5 8 c-3 -3 -4 -7 -4 -10 c0 -3 1 -5 2 -7 z"/>
+                </svg>
+            </div>
+
+            <h1 class="cover__title">СухоVL</h1>
+            <p class="cover__tagline">Народная карта происшествий Владивостока</p>
+            <p class="cover__sub">Отметьте, что случилось рядом с вами — и помогите другим узнать о рисках заранее.</p>
+
+            <div class="cover__actions">
+                <button type="button" id="btn-report-photo" class="cta cta--primary">
+                    <span class="cta__icon" aria-hidden="true">📷</span>
+                    <span class="cta__text">
+                        <span class="cta__title">Сделать фото происшествия</span>
+                        <span class="cta__hint">Быстрее всего — пара касаний</span>
+                    </span>
+                </button>
+                <button type="button" id="btn-report-map" class="cta">
+                    <span class="cta__icon" aria-hidden="true">📍</span>
+                    <span class="cta__text">
+                        <span class="cta__title">Отметить место на карте</span>
+                        <span class="cta__hint">Без фото, по памяти</span>
+                    </span>
+                </button>
+                <button type="button" id="btn-open-map" class="cta cta--ghost">
+                    <span class="cta__icon" aria-hidden="true">🗺️</span>
+                    <span class="cta__text">
+                        <span class="cta__title">Открыть карту</span>
+                        <span class="cta__hint">Посмотреть, что происходит</span>
+                    </span>
+                </button>
+            </div>
+
+            <p class="cover__foot">Без регистрации · данные — анонимно</p>
+        </div>
+    </section>
+
+    <button type="button" id="fab-report" class="fab hidden">
+        <span class="fab__plus" aria-hidden="true">+</span>
+        Сообщить о происшествии
+    </button>
+
+    <!-- Под каждый источник свой input: Android Chrome читает capture
+         только из разметки, навешанный скриптом атрибут он игнорирует. -->
+    <input type="file" id="photo-camera" accept="image/*"
+           capture="environment" hidden>
+    <input type="file" id="photo-gallery" accept="image/png,image/jpeg" hidden>
+
+    <!-- Шаг 1: уточнение места, как в такси -->
+    <div id="pin-panel" class="panel hidden">
+        <p id="pin-upload" class="panel__status"></p>
+        <p id="pin-hint" class="panel__hint"></p>
+        <p id="pin-address" class="panel__address">Определяем адрес…</p>
+        <div class="panel__row">
+            <button type="button" id="pin-locate" class="ghost-btn">Моё место</button>
+            <button type="button" id="pin-cancel" class="ghost-btn">Отмена</button>
+        </div>
+        <button type="button" id="pin-confirm" class="submit-btn">Подтвердить место</button>
+    </div>
+
+    <!-- Шаг 2: адрес, фото, комментарий -->
+    <div id="form-panel" class="panel hidden">
+        <p class="panel__hint">Проверьте адрес и добавьте подробности.</p>
+
+        <label class="field">Адрес
+            <input type="text" id="form-address" maxlength="200"
+                   placeholder="Улица, дом или ориентир">
+        </label>
+
+        <div class="field">Фото
+            <button type="button" id="form-photo-pick" class="file-btn">
+                <span aria-hidden="true">📷</span> Добавить фото
+            </button>
+        </div>
+        <p id="form-photo-status" class="panel__status"></p>
+
+        <label class="field">Комментарий (необязательно)
+            <textarea id="form-comment" rows="3" maxlength="1000"
+                      placeholder="Например: гололёд у остановки / сугроб перегородил тротуар"></textarea>
+        </label>
+
+        <p id="flow-error" class="form-error" hidden></p>
+        <button type="button" id="form-send" class="submit-btn">Отправить</button>
+        <button type="button" id="form-back" class="link-btn">Назад к выбору места</button>
+    </div>
+
+    <!-- Выбор источника фото: камера или галерея -->
+    <div id="photo-sheet" class="sheet hidden" role="dialog" aria-modal="true"
+         aria-labelledby="photo-sheet-title">
+        <div class="sheet__backdrop" data-sheet-close></div>
+        <div class="sheet__card">
+            <h2 class="sheet__title" id="photo-sheet-title">Добавить фото</h2>
+            <p class="sheet__hint">Откуда взять снимок происшествия?</p>
+
+            <button type="button" class="sheet__btn" data-photo-source="camera">
+                <span class="sheet__icon" aria-hidden="true">📷</span>
+                <span class="sheet__text">
+                    <span class="sheet__label">Камера</span>
+                    <span class="sheet__sub">Снять прямо сейчас</span>
+                </span>
+            </button>
+
+            <button type="button" class="sheet__btn" data-photo-source="gallery">
+                <span class="sheet__icon" aria-hidden="true">🖼️</span>
+                <span class="sheet__text">
+                    <span class="sheet__label">Галерея</span>
+                    <span class="sheet__sub">Выбрать готовое фото</span>
+                </span>
+            </button>
+
+            <button type="button" class="sheet__btn sheet__btn--ghost" data-sheet-close>
+                Отмена
+            </button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/geo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tiles.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/votes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/address.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/photo_source.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app_mobile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/stage.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/flow.js') }}"></script>
+    {% if is_dev %}
+    <script src="{{ url_for('static', filename='js/map_moderation.js') }}"></script>
+    {% endif %}
+</body>
+</html>

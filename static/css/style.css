@@ -1,0 +1,275 @@
+:root {
+    --header-height: 56px;
+    --vvh: 100vh;
+    --kb: 0px;
+
+    --brand: #0b3d62;
+    --brand-2: #1f6e9c;
+    --brand-ink: #ffffff;
+    --accent: #e63946;
+    --accent-2: #d12a38;
+    --ink: #1b2430;
+    --muted: #5a6572;
+    --border: #c5d8e4;
+    --surface: #ffffff;
+    --surface-2: #eef4f8;
+    --bg: #f5f7fa;
+    --danger: #c1121f;
+    --shadow-sm: 0 2px 6px rgba(11, 61, 98, 0.10);
+    --shadow-md: 0 8px 24px rgba(11, 61, 98, 0.14);
+    --shadow-lg: 0 18px 44px rgba(11, 61, 98, 0.22);
+    --radius: 14px;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --t-fast: 140ms var(--ease);
+    --t: 220ms var(--ease);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hidden { display: none !important; }
+
+/* Пока показана обложка — карта под ней скрыта (не грузит нам экран). */
+body[data-stage="cover"] #map { display: none; }
+
+.header {
+    position: relative;
+    z-index: 1400;
+    height: var(--header-height);
+    height: calc(var(--header-height) + env(safe-area-inset-top));
+    padding: 0 16px;
+    padding-top: env(safe-area-inset-top);
+    padding-left: calc(16px + env(safe-area-inset-left));
+    padding-right: calc(16px + env(safe-area-inset-right));
+    display: flex;
+    align-items: center;
+    background: var(--brand);
+    color: var(--brand-ink);
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+.header__brand { letter-spacing: 0.2px; }
+.header__spacer { flex: 1; }
+
+.header__link {
+    margin-left: 12px;
+    padding: 6px 10px;
+    color: #cfe6f5;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.header__link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.header__link-full { display: inline; }
+.header__link-short { display: none; }
+
+.header__badge {
+    margin-left: 10px;
+    padding: 2px 10px;
+    background: var(--brand-2);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#map {
+    height: calc(100vh - var(--header-height));
+    height: calc(100vh - (var(--header-height) + env(safe-area-inset-top)));
+    height: calc(100dvh - (var(--header-height) + env(safe-area-inset-top)));
+    height: calc(var(--vvh) - (var(--header-height) + env(safe-area-inset-top)));
+    width: 100%;
+}
+
+/* Поля ввода */
+input[type="text"],
+input[type="password"],
+input:not([type]),
+textarea {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 11px 12px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 0;
+    border-color: var(--brand-2);
+    box-shadow: 0 0 0 3px rgba(31, 110, 156, 0.22);
+}
+
+input[type="file"] {
+    display: block;
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.form-error {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--danger);
+}
+
+/* --- Основная кнопка «Отправить» / «Подтвердить место» --- */
+.submit-btn {
+    position: relative;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 18px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    cursor: pointer;
+    transition: transform var(--t-fast), box-shadow var(--t-fast),
+                filter var(--t-fast);
+    will-change: transform;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(230, 57, 70, 0.38),
+                inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.submit-btn:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: 0 4px 10px rgba(230, 57, 70, 0.28);
+}
+
+.submit-btn:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.28),
+                0 8px 20px rgba(230, 57, 70, 0.32);
+}
+
+.submit-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.login {
+    max-width: 420px;
+    margin: 16px auto;
+    padding: 0 16px;
+}
+
+.login__hint {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.login .field {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.popup-address {
+    margin: 2px 0 4px;
+    font-size: 13px;
+    color: var(--brand);
+}
+
+.popup-comment {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.popup-date {
+    font-size: 12px;
+    color: #666666;
+}
+
+.popup-photo {
+    display: block;
+    max-width: 220px;
+    width: 100%;
+    margin-top: 6px;
+    border-radius: 8px;
+}
+
+/* --- Мобильная адаптация общего слоя --- */
+@media (max-width: 640px) {
+    .header {
+        padding: 0 12px;
+        padding-left: calc(12px + env(safe-area-inset-left));
+        padding-right: calc(12px + env(safe-area-inset-right));
+        font-size: 16px;
+    }
+    .header__brand { font-size: 17px; }
+    .header__link {
+        margin-left: 6px;
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+    .header__badge {
+        margin-left: 8px;
+        padding: 2px 8px;
+        font-size: 11px;
+    }
+    .submit-btn {
+        min-height: 50px;
+        font-size: 15.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* На узких телефонах бейдж в хедере только мешает — прячем. */
+    .header__badge { display: none; }
+    .header__link { font-size: 12.5px; padding: 6px 7px; }
+    .header__link-full { display: none; }
+    .header__link-short { display: inline; }
+}
+
+@media (max-width: 360px) {
+    .header { padding: 0 10px; }
+    .header__brand { font-size: 16px; }
+    .header__link {
+        margin-left: 4px;
+        padding: 5px 6px;
+        font-size: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+}

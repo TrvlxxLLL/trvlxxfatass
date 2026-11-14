@@ -1,0 +1,26 @@
+<section class="dev__panel glass-card" data-panel="prompts">
+    <h2>Промпты проверки</h2>
+    <p class="dev__hint">
+        Модель должна отвечать JSON вида
+        <code>{"verdict": "approve|reject", "reason": "…"}</code>.
+        Если ответ непонятен, метка уходит на ручную модерацию.
+    </p>
+
+    <label class="field">Промпт проверки фото
+        <textarea rows="8" data-setting="prompt_photo"></textarea>
+    </label>
+
+    <label class="field">Промпт проверки комментария
+        <textarea rows="8" data-setting="prompt_comment"></textarea>
+    </label>
+
+    <div class="dev__actions">
+        <button type="button" class="submit-btn" data-save>Сохранить</button>
+        <button type="button" class="ghost-btn" data-reset="prompt_photo">
+            Вернуть стандартный промпт фото
+        </button>
+        <button type="button" class="ghost-btn" data-reset="prompt_comment">
+            Вернуть стандартный промпт комментария
+        </button>
+    </div>
+</section>

@@ -1,0 +1,334 @@
+/* Уточнение точки, форма сообщения, уведомления. */
+
+.big-btn {
+    display: block;
+    width: 100%;
+    min-height: 56px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--brand);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform var(--t-fast), box-shadow var(--t-fast),
+                background-color var(--t-fast);
+}
+
+.big-btn:hover { background: #e2eef6; box-shadow: var(--shadow-sm); }
+.big-btn:active { transform: scale(0.985); }
+
+.big-btn--primary {
+    color: #ffffff;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+}
+
+.big-btn--primary:hover {
+    box-shadow: 0 12px 26px rgba(230, 57, 70, 0.4);
+}
+
+/* --- Плавающая кнопка «Сообщить» поверх карты --- */
+.fab {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 22px 0 18px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    border: 0;
+    border-radius: 26px;
+    box-shadow: 0 12px 28px rgba(230, 57, 70, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: transform var(--t-fast), box-shadow var(--t-fast);
+    animation: fab-in 320ms var(--ease) both;
+}
+
+.fab:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 16px 34px rgba(230, 57, 70, 0.46);
+}
+
+.fab:active { transform: translateX(-50%) scale(0.98); }
+
+.fab:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.3),
+                0 12px 28px rgba(230, 57, 70, 0.4);
+}
+
+.fab__plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+}
+
+@keyframes fab-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* --- Центральный «пин» в режиме выбора точки --- */
+.center-pin {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 900;
+    width: 40px;
+    height: 56px;
+    margin: -56px 0 0 -20px;
+    pointer-events: none;
+    animation: pin-drop 420ms var(--ease) both;
+}
+
+.center-pin__head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    margin-left: -13px;
+    background: linear-gradient(145deg, #ff5a68 0%, #c1121f 100%);
+    border: 3px solid #ffffff;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+    animation: pin-bob 2.4s ease-in-out infinite;
+}
+
+.center-pin__pulse {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    background: rgba(230, 57, 70, 0.35);
+    border-radius: 50%;
+    animation: pin-pulse 2s ease-out infinite;
+}
+
+.center-pin__shadow {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    width: 18px;
+    height: 6px;
+    margin-left: -9px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    animation: pin-shadow 2.4s ease-in-out infinite;
+}
+
+@keyframes pin-drop {
+    0%   { opacity: 0; transform: translateY(-24px); }
+    60%  { opacity: 1; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pin-bob {
+    0%, 100% { transform: rotate(-45deg) translateY(0); }
+    50%      { transform: rotate(-45deg) translateY(-4px); }
+}
+
+@keyframes pin-pulse {
+    0%   { transform: scale(0.6); opacity: 0.55; }
+    80%  { transform: scale(2.2); opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes pin-shadow {
+    0%, 100% { transform: scaleX(1); opacity: 0.6; }
+    50%      { transform: scaleX(0.7); opacity: 0.35; }
+}
+
+/* Пока карту двигают — пин слегка «приподнимается» */
+body[data-dragging="1"] .center-pin__head {
+    animation: none;
+    transform: rotate(-45deg) translateY(-6px);
+    transition: transform var(--t-fast);
+}
+
+body[data-dragging="1"] .center-pin__shadow {
+    animation: none;
+    transform: scaleX(0.6);
+    opacity: 0.3;
+    transition: transform var(--t-fast), opacity var(--t-fast);
+}
+
+/* --- Нижняя панель (pin / form) --- */
+.panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
+    max-height: 80vh;
+    max-height: calc(var(--vvh) * 0.8);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 18px 18px;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom) + var(--kb));
+    color: var(--ink);
+    background: var(--surface);
+    border-top: 1px solid rgba(197, 216, 228, 0.6);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -16px 40px rgba(11, 61, 98, 0.22);
+    animation: panel-in 320ms var(--ease) both;
+}
+
+.panel::before {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin: -4px auto 12px;
+    background: #d6e0e9;
+    border-radius: 4px;
+}
+
+@media (min-width: 640px) {
+    .panel {
+        left: 50%;
+        right: auto;
+        bottom: 16px;
+        width: 460px;
+        transform: translateX(-50%);
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        animation: panel-in-desktop 320ms var(--ease) both;
+    }
+    .panel::before { display: none; }
+}
+
+@keyframes panel-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes panel-in-desktop {
+    from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.panel__status {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: var(--brand);
+}
+
+.panel__status--error { color: var(--danger); }
+
+.panel__hint {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.panel__address {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--brand);
+    background: var(--surface-2);
+    border: 1px solid #dbe8f1;
+    border-radius: 12px;
+    transition: background-color var(--t), border-color var(--t);
+}
+
+.panel__row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.field {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.ghost-btn {
+    flex: 1;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color var(--t-fast), transform var(--t-fast);
+}
+
+.ghost-btn:hover { background: #e2eef6; }
+.ghost-btn:active { transform: scale(0.985); }
+
+.ghost-btn:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(31, 110, 156, 0.26);
+}
+
+.link-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    color: var(--brand);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color var(--t-fast);
+}
+
+.link-btn:hover { color: var(--brand-2); }
+
+/* --- Toast --- */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 1300;
+    max-width: 92vw;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #ffffff;
+    background: var(--brand);
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(11, 61, 98, 0.35);
+    transform: translateX(-50%);
+    animation: toast-in 260ms var(--ease) both;
+}
+
+.toast--error { background: var(--danger); }
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

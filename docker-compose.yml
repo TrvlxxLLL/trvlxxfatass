@@ -1,0 +1,23 @@
+name: suhovl
+
+services:
+  web:
+    build: .
+    container_name: suhovl-web
+    ports:
+      - "5000:5000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: "5000"
+      DATABASE_PATH: "/app/data/sukhovl.db"
+      UPLOAD_DIR: "/app/uploads"
+    volumes:
+      - suhovl-data:/app/data
+      - suhovl-uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  suhovl-data:
+  suhovl-uploads:

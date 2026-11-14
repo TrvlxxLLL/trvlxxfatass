@@ -1,0 +1,462 @@
+/* Кабинет разработчика и элементы модерации.
+   Дизайн-язык — как на стартовой обложке СухоVL:
+   глубокий синий фон задаётся через body.themed + theme.css,
+   контент живёт в «стеклянных» карточках. */
+
+.dev {
+    max-width: 920px;
+    margin: 24px auto 40px;
+    padding: 0 16px;
+}
+
+.dev__hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding: 18px 20px;
+}
+
+.dev__hero .glass-logo { margin: 0; width: 52px; height: 52px; border-radius: 14px; }
+
+.dev__hero h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #0b3d62;
+    letter-spacing: -0.3px;
+}
+
+.dev__hero p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #4a5a6a;
+}
+
+.dev__tabs,
+.dev__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 16px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.dev__tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+}
+
+.dev__tabs::-webkit-scrollbar { height: 4px; }
+.dev__tabs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+}
+
+.tab {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-height: 38px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #cfe6f5;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 140ms ease, color 140ms ease,
+                border-color 140ms ease, transform 140ms ease;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.tab.is-active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.dev__panel {
+    display: none;
+    padding: 24px 22px;
+    margin-bottom: 16px;
+}
+
+.dev__panel.is-active {
+    display: block;
+}
+
+.dev__panel h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #0b3d62;
+    letter-spacing: -0.2px;
+}
+
+.dev__panel h3 {
+    margin: 18px 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f6e9c;
+}
+
+.dev__hint {
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #5a6572;
+}
+
+.dev__hint code {
+    padding: 1px 6px;
+    font-size: 12px;
+    background: #eaf3fa;
+    border: 1px solid #d6e5f0;
+    border-radius: 6px;
+    color: #0b3d62;
+}
+
+.dev__hint a { color: #1f6e9c; font-weight: 600; }
+
+.dev__status {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0e4a2e;
+    background: #e3f6ec;
+    border: 1px solid #b7e4c7;
+    border-radius: 12px;
+}
+
+.dev__status--error {
+    color: #ffffff;
+    background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+    border-color: transparent;
+    box-shadow: 0 10px 22px rgba(230, 57, 70, 0.28);
+}
+
+/* --- Поля (только в кабинете, чтобы не бить по форме на карте) --- */
+.dev .field {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5a6a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.dev .field--row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+    color: #0e1f33;
+    padding: 10px 12px;
+    background: #f3f8fc;
+    border: 1px solid #d6e5f0;
+    border-radius: 12px;
+}
+
+.dev .field--row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #e63946;
+}
+
+.dev .field--pair {
+    display: flex;
+    gap: 12px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.dev .field--pair > label { flex: 1; }
+
+.dev .field input[type="text"],
+.dev .field input[type="password"],
+.dev .field input[type="number"],
+.dev .field select,
+.dev .field textarea {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 11px 12px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0e1f33;
+    text-transform: none;
+    letter-spacing: 0;
+    background: #ffffff;
+    border: 1px solid #d6e5f0;
+    border-radius: 10px;
+    transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.dev .field input:focus-visible,
+.dev .field select:focus-visible,
+.dev .field textarea:focus-visible {
+    outline: 0;
+    border-color: #1f6e9c;
+    box-shadow: 0 0 0 3px rgba(31, 110, 156, 0.22);
+}
+
+.dev .field textarea { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 13px; }
+
+.dev__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 18px 0 6px;
+}
+
+.dev__actions .submit-btn {
+    width: auto;
+    min-width: 160px;
+    padding: 0 22px;
+}
+
+.dev__actions .ghost-btn {
+    flex: 0 0 auto;
+    min-width: 160px;
+    padding: 0 18px;
+}
+
+.dev__result {
+    margin-top: 10px;
+    padding: 12px 14px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #0e1f33;
+    white-space: pre-wrap;
+    background: #f3f8fc;
+    border: 1px solid #d6e5f0;
+    border-radius: 12px;
+}
+
+/* --- Очередь модерации --- */
+.queue__item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e1ecf4;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(11, 61, 98, 0.08);
+}
+
+.queue__photo {
+    width: 160px;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e1ecf4;
+}
+
+.queue__photo--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 110px;
+    font-size: 13px;
+    color: #7a8794;
+    background: #f3f8fc;
+    border: 1px dashed #c5d8e4;
+    border-radius: 12px;
+}
+
+.queue__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.queue__head {
+    font-size: 12px;
+    color: #7a8794;
+}
+
+.queue__comment {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #0e1f33;
+    word-break: break-word;
+}
+
+.queue__ai {
+    margin: 6px 0;
+    padding: 8px 10px;
+    font-size: 12.5px;
+    color: #7a4b00;
+    background: #fff6e0;
+    border: 1px solid #f5d98b;
+    border-radius: 8px;
+}
+
+.badge {
+    display: inline-block;
+    margin: 2px 6px 2px 0;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #27313a;
+    background: #eceff1;
+    border-radius: 999px;
+}
+
+.badge--approved,
+.badge--published {
+    color: #0e4a2e;
+    background: #d8f1e3;
+}
+
+.badge--pending {
+    color: #7a4b00;
+    background: #fdf0d0;
+}
+
+.badge--rejected {
+    color: #7a1a24;
+    background: #fadadd;
+}
+
+.mod,
+.queue__actions {
+    margin-top: 10px;
+}
+
+.mod__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.mod__ai {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #7a4b00;
+}
+
+.mod-btn {
+    min-height: 34px;
+    margin: 0 6px 6px 0;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0b3d62;
+    background: #eaf3fa;
+    border: 1px solid #c5d8e4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.mod-btn:hover {
+    background: #d6e5f0;
+    transform: translateY(-1px);
+}
+
+.mod-btn:active { transform: translateY(0) scale(0.985); }
+
+/* --- Ghost-кнопка в кабинете (переопределяем для светлой карточки) --- */
+body.themed .glass-card .ghost-btn {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0b3d62;
+    background: #f3f8fc;
+    border: 1px solid #d6e5f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 140ms ease, transform 140ms ease,
+                border-color 140ms ease;
+}
+
+body.themed .glass-card .ghost-btn:hover {
+    background: #eaf3fa;
+    border-color: #bcd5e8;
+}
+
+@media (max-width: 640px) {
+    .dev { margin: 16px auto 28px; padding: 0 12px; }
+    .dev__hero { padding: 14px 16px; gap: 12px; margin-bottom: 14px; }
+    .dev__hero .glass-logo { width: 44px; height: 44px; border-radius: 12px; }
+    .dev__hero .glass-logo svg { width: 36px; height: 36px; }
+    .dev__hero h1 { font-size: 18px; }
+    .dev__hero p { font-size: 12.5px; }
+
+    .dev__tabs, .dev__filters {
+        padding: 8px;
+        border-radius: 14px;
+        margin-bottom: 14px;
+    }
+    .tab { min-height: 36px; padding: 0 14px; font-size: 13.5px; }
+
+    .dev__panel { padding: 18px 16px; border-radius: 18px; }
+    .dev__panel h2 { font-size: 18px; }
+    .dev__panel h3 { font-size: 14px; margin-top: 14px; }
+    .dev__hint { font-size: 12.5px; }
+
+    .dev .field { font-size: 12px; margin-bottom: 12px; }
+    .dev .field input[type="text"],
+    .dev .field input[type="password"],
+    .dev .field input[type="number"],
+    .dev .field select,
+    .dev .field textarea {
+        font-size: 16px;   /* 16px — чтобы iOS не зумил при фокусе */
+        padding: 10px 11px;
+    }
+    .dev .field textarea { font-size: 13px; }
+
+    .queue__item { flex-direction: column; padding: 12px; border-radius: 14px; }
+    .queue__photo, .queue__photo--empty { width: 100%; max-height: 220px; height: auto; }
+    .dev .field--pair { flex-direction: column; gap: 10px; }
+
+    .dev__actions { gap: 8px; }
+    .dev__actions .submit-btn,
+    .dev__actions .ghost-btn {
+        width: 100%;
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+
+    .mod-btn { min-height: 38px; padding: 0 12px; }
+}
+
+@media (max-width: 420px) {
+    .dev { padding: 0 10px; }
+    .dev__hero { flex-direction: row; padding: 12px 14px; gap: 10px; }
+    .dev__hero h1 { font-size: 17px; }
+    .dev__hero p { font-size: 12px; line-height: 1.35; }
+    .dev__panel { padding: 16px 14px; border-radius: 16px; }
+    .dev__panel h2 { font-size: 17px; }
+    .tab { padding: 0 12px; font-size: 13px; }
+    .queue__photo, .queue__photo--empty { max-height: 180px; }
+}

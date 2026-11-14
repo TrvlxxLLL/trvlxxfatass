@@ -1,0 +1,31 @@
+# Секреты (ВАШ КЛЮЧ)
+.env
+*.env
+!.env.example
+
+# Виртуальное окружение Python (ВАЖНО!)
+venv_ptxt/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Ваши данные и загрузки
+data/
+uploads/
+instance/
+*.sqlite3
+*.db
+
+# Логи и системный мусор
+*.log
+.DS_Store
+Thumbs.db
+
+# Настройки редактора (опционально)
+.vscode/

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Кабинет разработчика — СухоVL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dev.css') }}">
+</head>
+<body class="themed" data-dev="1">
+<header class="header">
+    <span class="header__brand">СухоVL</span>
+    <span class="header__badge">кабинет разработчика</span>
+    <span class="header__spacer"></span>
+    <a class="header__link" href="/">Карта</a>
+    <a class="header__link" href="/logout">Выйти ({{ username }})</a>
+</header>
+
+<main class="dev">
+    <div class="dev__hero glass-card">
+        <div class="glass-logo" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="44" height="44">
+                <defs>
+                    <linearGradient id="dropGradDev" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#7dd3fc"/>
+                        <stop offset="100%" stop-color="#0369a1"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#dropGradDev)"
+                      d="M24 4 C14 18 10 26 10 32 a14 14 0 0 0 28 0 C38 26 34 18 24 4 Z"/>
+                <path fill="rgba(255,255,255,0.45)"
+                      d="M18 24 c-2 3 -3 6 -3 9 a9 9 0 0 0 5 8 c-3 -3 -4 -7 -4 -10 c0 -3 1 -5 2 -7 z"/>
+            </svg>
+        </div>
+        <div>
+            <h1>Кабинет разработчика</h1>
+            <p>Настройки модели, промпты, тексты и очередь модерации.</p>
+        </div>
+    </div>
+
+    <nav class="dev__tabs">
+        <button type="button" class="tab is-active" data-tab="model">Модель и проверка</button>
+        <button type="button" class="tab" data-tab="prompts">Промпты</button>
+        <button type="button" class="tab" data-tab="texts">Тексты уведомлений</button>
+        <button type="button" class="tab" data-tab="queue">Очередь модерации</button>
+    </nav>
+
+    <p id="dev-status" class="dev__status" hidden></p>
+
+    {% include "dev_model.html" %}
+    {% include "dev_prompts.html" %}
+    {% include "dev_texts.html" %}
+    {% include "dev_queue.html" %}
+</main>
+
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dev_settings.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dev_queue.js') }}"></script>
+</body>
+</html>

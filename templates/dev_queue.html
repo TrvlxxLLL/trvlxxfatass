@@ -1,0 +1,18 @@
+<section class="dev__panel glass-card" data-panel="queue">
+    <h2>Ручная модерация</h2>
+    <p class="dev__hint">
+        Те же кнопки доступны прямо в попапах карты: зайдите на
+        <a href="/">карту</a> под этим аккаунтом.
+    </p>
+
+    <div class="dev__filters">
+        <button type="button" class="tab is-active" data-scope="pending">На проверке</button>
+        <button type="button" class="tab" data-scope="rejected">Отклонённые</button>
+        <button type="button" class="tab" data-scope="published">Опубликованные</button>
+        <button type="button" class="tab" data-scope="all">Все</button>
+        <button type="button" class="ghost-btn" id="queue-refresh">Обновить</button>
+    </div>
+
+    <p id="queue-counts" class="dev__hint"></p>
+    <div id="queue-list" class="queue"></div>
+</section>

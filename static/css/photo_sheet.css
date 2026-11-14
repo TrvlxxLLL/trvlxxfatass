@@ -1,0 +1,164 @@
+/* Шит выбора источника фото: камера или галерея (мобильная версия). */
+
+.sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.sheet__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 61, 98, 0.45);
+    backdrop-filter: blur(2px);
+    animation: sheet-fade 180ms var(--ease) both;
+}
+
+.sheet__card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 10px 10px;
+    margin-bottom: calc(10px + env(safe-area-inset-bottom));
+    padding: 16px 16px 14px;
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    animation: sheet-up 220ms var(--ease) both;
+}
+
+.sheet__title {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+.sheet__hint {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    color: var(--muted);
+}
+
+.sheet__btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 60px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    text-align: left;
+    font-family: inherit;
+    color: var(--brand);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform var(--t-fast), background-color var(--t-fast),
+                box-shadow var(--t-fast);
+}
+
+.sheet__btn:hover { background: #e2eef6; box-shadow: var(--shadow-sm); }
+.sheet__btn:active { transform: scale(0.985); }
+
+.sheet__btn:focus-visible {
+    outline: 0;
+    border-color: var(--brand-2);
+    box-shadow: 0 0 0 3px rgba(31, 110, 156, 0.22);
+}
+
+.sheet__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    font-size: 20px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.sheet__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sheet__label {
+    font-size: 15.5px;
+    font-weight: 600;
+}
+
+.sheet__sub {
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.sheet__btn--ghost {
+    min-height: 46px;
+    margin-bottom: 0;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border-color: transparent;
+}
+
+.sheet__btn--ghost:hover {
+    background: var(--surface-2);
+    box-shadow: none;
+}
+
+/* Кнопка «Добавить фото» вместо нативного input[type=file] в форме. */
+.file-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 6px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--brand);
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color var(--t-fast), border-color var(--t-fast),
+                transform var(--t-fast);
+}
+
+.file-btn:hover { background: #e2eef6; border-color: var(--brand-2); }
+.file-btn:active { transform: scale(0.99); }
+
+.file-btn:focus-visible {
+    outline: 0;
+    border-color: var(--brand-2);
+    box-shadow: 0 0 0 3px rgba(31, 110, 156, 0.22);
+}
+
+@keyframes sheet-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes sheet-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 641px) and (pointer: fine) {
+    .sheet { align-items: center; }
+    .sheet__card { margin-bottom: 10px; }
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вход разработчика — СухоVL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+</head>
+<body class="themed">
+<header class="header">
+    <span class="header__brand">СухоVL</span>
+    <span class="header__badge">вход разработчика</span>
+    <span class="header__spacer"></span>
+    <a class="header__link" href="/">На карту</a>
+</header>
+
+<div class="login">
+    <div class="glass-card">
+        <div class="glass-logo" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="52" height="52">
+                <defs>
+                    <linearGradient id="dropGradLogin" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#7dd3fc"/>
+                        <stop offset="100%" stop-color="#0369a1"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#dropGradLogin)"
+                      d="M24 4 C14 18 10 26 10 32 a14 14 0 0 0 28 0 C38 26 34 18 24 4 Z"/>
+                <path fill="rgba(255,255,255,0.45)"
+                      d="M18 24 c-2 3 -3 6 -3 9 a9 9 0 0 0 5 8 c-3 -3 -4 -7 -4 -10 c0 -3 1 -5 2 -7 z"/>
+            </svg>
+        </div>
+
+        <h2>Вход в кабинет</h2>
+        <p class="login__tagline">СухоVL · кабинет разработчика</p>
+
+        {% if error %}
+            <p class="form-error" role="alert">{{ error }}</p>
+        {% endif %}
+
+        <form method="post" action="/login">
+            <input type="hidden" name="next" value="{{ next_url or '' }}">
+
+            <label class="field">Логин
+                <input type="text" name="username" maxlength="64"
+                       autocomplete="username" required>
+            </label>
+
+            <label class="field">Пароль
+                <input type="password" name="password"
+                       autocomplete="current-password" required>
+            </label>
+
+            <button class="submit-btn" type="submit">Войти</button>
+        </form>
+
+        <p class="login__hint">
+            Аккаунт задаётся в <code>.env</code> (DEV_LOGIN и DEV_PASSWORD).<br>
+            По умолчанию на время хакатона: <b>dev</b> / <b>suhovl2025</b>.
+        </p>
+    </div>
+</div>
+</body>
+</html>

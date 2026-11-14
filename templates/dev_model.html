@@ -1,0 +1,86 @@
+<section class="dev__panel glass-card is-active" data-panel="model">
+    <h2>Подключение модели проверки</h2>
+    <p class="dev__hint">
+        Фото сначала сохраняется на сервере, затем уходит в выбранный сервис.
+        Для GigaChat достаточно выбрать провайдера и вставить ключ авторизации:
+        адрес и модель подставятся сами.
+    </p>
+
+    <label class="field field--row">
+        <input type="checkbox" data-setting="ai_enabled">
+        <span>Проверять загрузки моделью</span>
+    </label>
+
+    <label class="field">Провайдер
+        <select data-setting="ai_provider">
+            <option value="openai">OpenAI-совместимый (gptunnel)</option>
+            <option value="gigachat">GigaChat (Сбер)</option>
+        </select>
+    </label>
+
+    <label class="field">Endpoint
+        <input type="text" data-setting="ai_endpoint"
+               placeholder="https://gptunnel.ru/v1/chat/completions">
+    </label>
+
+    <label class="field">Модель
+        <input type="text" data-setting="ai_model" placeholder="gpt-4o-mini">
+    </label>
+
+    <label class="field">Ключ API (для gptunnel)
+        <input type="password" data-setting="ai_api_key" autocomplete="new-password"
+               placeholder="оставьте пустым, чтобы не менять">
+    </label>
+    <p class="dev__hint">Текущий источник ключа: <b id="key-source">—</b>.
+        Ключ не показывается и не отдаётся через API.</p>
+
+    <h3>GigaChat</h3>
+    <label class="field">Ключ авторизации (Authorization key из кабинета Сбера)
+        <input type="password" data-setting="gigachat_auth_key"
+               autocomplete="new-password"
+               placeholder="оставьте пустым, чтобы не менять">
+    </label>
+    <p class="dev__hint">Текущий источник ключа: <b id="giga-key-source">—</b>.
+        Можно вставить и пару client_id:client_secret — закодируем сами.</p>
+
+    <label class="field">Scope
+        <select data-setting="gigachat_scope">
+            <option value="GIGACHAT_API_PERS">Физлицо (GIGACHAT_API_PERS)</option>
+            <option value="GIGACHAT_API_B2B">Юрлицо, пакеты (GIGACHAT_API_B2B)</option>
+            <option value="GIGACHAT_API_CORP">Юрлицо, по факту (GIGACHAT_API_CORP)</option>
+        </select>
+    </label>
+
+    <label class="field field--row">
+        <input type="checkbox" data-setting="gigachat_verify_ssl">
+        <span>Проверять TLS-сертификат GigaChat
+            (нужен корневой сертификат Минцифры)</span>
+    </label>
+
+    <div class="field field--pair">
+        <label>Таймаут, сек
+            <input type="number" min="5" max="120" data-setting="ai_timeout">
+        </label>
+        <label>Лимит токенов
+            <input type="number" min="50" max="2000" data-setting="ai_max_tokens">
+        </label>
+    </div>
+
+    <label class="field">Режим модерации
+        <select data-setting="moderation_mode">
+            <option value="ai">ИИ проверяет, спорное — вручную</option>
+            <option value="manual">Только вручную</option>
+            <option value="off">Без проверки (публиковать сразу)</option>
+        </select>
+    </label>
+
+    <label class="field">GeoIP endpoint (необязательно, {ip} в адресе)
+        <input type="text" data-setting="geoip_endpoint" placeholder="пусто — выключено">
+    </label>
+
+    <div class="dev__actions">
+        <button type="button" class="submit-btn" data-save>Сохранить</button>
+        <button type="button" class="ghost-btn" id="ai-test">Проверить связь</button>
+    </div>
+    <pre id="ai-test-result" class="dev__result" hidden></pre>
+</section>
